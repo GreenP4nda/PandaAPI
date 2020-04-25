@@ -19,7 +19,7 @@ except:
         sys.stdout.write("py -m pip install requests")
         import requests
 
-version = 1.5
+version = 1.6
 prefix = "§8» §3PandaAPI §8| §9"
 
 #
