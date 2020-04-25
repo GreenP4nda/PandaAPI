@@ -286,7 +286,7 @@ def checkVersion():
     global version
     vFile = requests.get("https://github.com/GreenP4nda/PandaAPI/raw/master/PandaAPI.py")
     content = vFile.text.split("\n")
-    v = float(content.replace("version = ", ""))
+    v = float(content[0].replace("version = ", ""))
     if(v > version):
         update()
 
@@ -296,8 +296,8 @@ def update():
     if answer == "Yes":
         vFile = requests.get("https://github.com/GreenP4nda/PandaAPI/raw/master/PandaAPI.py")
         content = vFile.text.split("\n")
-        v = float(content.replace("version = ", ""))
-        betterText(prefix + "§3Downloading §5" + str(v) + " §3Version of §5PandaAPI."))
+        v = float(content[0].replace("version = ", ""))
+        betterText(prefix + "§3Downloading §5" + str(v) + " §3Version of §5PandaAPI.")
         open("PandaAPI.py", "wb").write(vFile.content)
         betterText(prefix + "§3The new Version has been downloaded. §1Please restart the Project.")
     elif answer == "No":
