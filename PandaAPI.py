@@ -3,9 +3,23 @@ import time
 import sys
 import math
 import os.path
+import urllib
 import urllib.request
+import pip
 
-version = "1.5"
+try:
+    import requests
+except:
+    try:
+        version = os.system("pip --version")
+        sys.stdout.write("py -m pip install requests")
+        import requests
+    except:
+        sys.stdout.write("python -m pip install -U pip")
+        sys.stdout.write("py -m pip install requests")
+        import requests
+
+version = 1.5
 prefix = "§8» §3PandaAPI §8| §9"
 
 #
@@ -37,6 +51,8 @@ prefix = "§8» §3PandaAPI §8| §9"
 #   - Returns the name of the Platform that the Programm is run on
 # clearScreen
 #   - Clears the screen on every Platform
+# goToLastLine
+#   - Moves the cursor to the last written line
 # progressBar
 #   - Displays a Progressbar with a given with and percentage and gives it a given color
 # createDirectory
@@ -55,7 +71,7 @@ prefix = "§8» §3PandaAPI §8| §9"
 #   - Creates an Input field for registered Commands
 # registerCommand
 #   - Registers a Command for the Command Handler
-# prefixCreator
+# prefixBuilder
 #   - Creates a console Prefix
 #
 
@@ -102,14 +118,10 @@ def betterInput(text):
 
 # Prints a Basetext and cicles through different given States with a given delay
 def stateText(basetext, states, delay):
-    CURSOR_UP_ONE = '\x1b[1A'
-    ERASE_LINE = '\x1b[2K'
-
     betterText(" ")
     i = 0
     while i < len(states):
-        sys.stdout.write(CURSOR_UP_ONE)
-        sys.stdout.write(ERASE_LINE)
+        goToLastLine()
         betterText(basetext + states[i])
         time.sleep(delay)
         i += 1
@@ -117,7 +129,6 @@ def stateText(basetext, states, delay):
 # Displays a Question with a given title and given answers
 # Returns one of the answers or nothing if the answer given was incorrect
 def question(title, answers):
-    clearScreen()
     betterText(title)
     i = 0
     while i < len(answers):
@@ -153,19 +164,26 @@ def clearScreen():
     else:
         os.system("clear")
 
+# Moves the cursor to the last written line
+def goToLastLine():
+    CURSOR_UP_ONE = '\x1b[1A'
+    ERASE_LINE = '\x1b[2K'
+    sys.stdout.write(CURSOR_UP_ONE)
+    sys.stdout.write(ERASE_LINE)
+
 # Displays a Progressbar with a given with and percentage and gives it a given color
-def progressBar(width, percent, color):
+def progressBar(percent, width=10, color="3", default="6"):
     clearScreen()
     slots = math.floor(width * (percent/100))
-    text = ""
+    text=""
     i = 0
     while i < width:
         if i < slots:
-            text = text + "§" + color + "█"
+            text = text + "§" + str(color) + "█"
         else:
             text = text + "§9█"
         i +=1
-    betterText(text + " §9" + str(slots) + "/" + str(width))
+    return text + " §9" + str(slots) + "/" + str(width)
 
 # Creates a Directory at a given path
 def createDirectory(path):
@@ -235,7 +253,7 @@ def registerCommand(command, executor, description=""):
     descriptions.append(description)
 
 # Creates a console Prefix
-def prefixCrator(prefix, textcolor="9", charactercolor="8"):
+def prefixBuilder(prefix, textcolor="9", charactercolor="8"):
     back = "§" + str(charactercolor) + "» §" + str(textcolor) + str(prefix) + "§" + str(charactercolor) + " | §9"
     return back
 
@@ -263,20 +281,31 @@ def pandaapiCommand(msg, sentprefix):
         else:
             betterText(prefix + "§1Unknown Command!")
 
-def checkUpdate():
-    url = "https://drive.google.com/open?id=1RIVfNHFC87v-9vSea8yX0qoqYOZD3MjR"
-    file = urllib.request.urlopen(url)
-    lines = []
-    for line in file:
-        lines.append(line.decode('utf-8'))
-    
-    v = int(lines[0].replace("Version: ", ""))
-    if version < v:
-        betterText(prefix + "You are not running the latest version of the PandaAPI.")
-        answer = question("Do you want to update", ["Yes", "No"])
-        if answer == "Yes":
-            betterText(prefix + "Downloading new Version [" + str(v) + "]")
+def checkVersion():
+    global version
+    vFile = requests.get("https://github.com/GreenP4nda/PandaAPI/raw/master/version.txt")
+    v = float(vFile.text.replace("Version: ", ""))
+    if(v > version):
+        update()
 
+def update():
+    betterText(prefix+ "§3There is a new Update for §5PandaAPI.")
+    answer = question(prefix + "§3Do you want do update to the new Version?", ["Yes", "No"])
+    if answer == "Yes":
+        vFile = requests.get("https://github.com/GreenP4nda/PandaAPI/raw/master/version.txt")
+        v = float(vFile.text.replace("Version: ", ""))
+        betterText(prefix + "§3Downloading §5" + str(v) + " §3Version of §5PandaAPI.")
+        vFile = requests.get("https://github.com/GreenP4nda/PandaAPI/raw/master/PandaAPI.py")
+        createDirectory("downloads")
+        open("downloads/PandaAPI.py", "wb").write(vFile.content)
+        betterText(prefix + "§3The new Version has been saved in the §5downloads §3Folder. §1Please §5replace §1the API and §5restart§1.")
+    elif answer == "No":
+        betterText(prefix + "Continuing with outdated Version of PandaAPI")
+    else:
+        betterText("§1Invalid answer!")
+        clearScreen()
+        update()
+            
 registerCommand("pandaapi", pandaapiCommand)
 
 clearScreen()
@@ -313,4 +342,5 @@ if not fileExists("Readme.txt"):
     writeLine("README.txt", "This Project uses the PandaAPI.")
     writeLine("README.txt", "In order for this Project to function correctly, the PandaAPI must be in the same Folder as the decired Project at all times!")
 
-checkUpdate()
+checkVersion()
+input()
