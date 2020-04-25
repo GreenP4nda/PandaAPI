@@ -1,3 +1,5 @@
+version = 1.0
+
 import os
 import time
 import sys
@@ -19,7 +21,6 @@ except:
         sys.stdout.write("py -m pip install requests")
         import requests
 
-version = 1.6
 prefix = "§8» §3PandaAPI §8| §9"
 
 #
@@ -283,8 +284,9 @@ def pandaapiCommand(msg, sentprefix):
 
 def checkVersion():
     global version
-    vFile = requests.get("https://github.com/GreenP4nda/PandaAPI/raw/master/version.txt")
-    v = float(vFile.text.replace("Version: ", ""))
+    vFile = requests.get("https://github.com/GreenP4nda/PandaAPI/raw/master/PandaAPI.py")
+    content = vFile.text.split("\n")
+    v = float(content.replace("version = ", ""))
     if(v > version):
         update()
 
@@ -292,13 +294,12 @@ def update():
     betterText(prefix+ "§3There is a new Update for §5PandaAPI.")
     answer = question(prefix + "§3Do you want do update to the new Version?", ["Yes", "No"])
     if answer == "Yes":
-        vFile = requests.get("https://github.com/GreenP4nda/PandaAPI/raw/master/version.txt")
-        v = float(vFile.text.replace("Version: ", ""))
-        betterText(prefix + "§3Downloading §5" + str(v) + " §3Version of §5PandaAPI.")
         vFile = requests.get("https://github.com/GreenP4nda/PandaAPI/raw/master/PandaAPI.py")
-        createDirectory("downloads")
-        open("downloads/PandaAPI.py", "wb").write(vFile.content)
-        betterText(prefix + "§3The new Version has been saved in the §5downloads §3Folder. §1Please §5replace §1the API and §5restart§1.")
+        content = vFile.text.split("\n")
+        v = float(content.replace("version = ", ""))
+        betterText(prefix + "§3Downloading §5" + str(v) + " §3Version of §5PandaAPI."))
+        open("PandaAPI.py", "wb").write(vFile.content)
+        betterText(prefix + "§3The new Version has been downloaded. §1Please restart the Project.")
     elif answer == "No":
         betterText(prefix + "Continuing with outdated Version of PandaAPI")
     else:
