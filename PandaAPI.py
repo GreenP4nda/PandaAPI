@@ -345,4 +345,3 @@ if not fileExists("Readme.txt"):
     writeLine("README.txt", "In order for this Project to function correctly, the PandaAPI must be in the same Folder as the decired Project at all times!")
 
 checkVersion()
-input()
