@@ -1,4 +1,4 @@
-version = 1.0
+version = 1.1
 
 import os
 import time
@@ -8,17 +8,18 @@ import os.path
 import urllib
 import urllib.request
 import pip
+import subprocess
 
 try:
     import requests
 except:
     try:
         version = os.system("pip --version")
-        sys.stdout.write("py -m pip install requests")
+        subprocess.run(["ls", "py -m pip install requests"])
         import requests
     except:
-        sys.stdout.write("python -m pip install -U pip")
-        sys.stdout.write("py -m pip install requests")
+        subprocess.run(["ls", "python -m pip install -U pip"])
+        subprocess.run(["ls", "py -m pip install requests"])
         import requests
 
 prefix = "§8» §3PandaAPI §8| §9"
