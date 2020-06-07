@@ -110,7 +110,7 @@ def colorText(text):
 
 # Displays a Text that can contain color codes
 def betterText(text, end="\n"):
-    print(colorText(text + "§9"), end=end)
+    print(colorText(str(text) + "§9"), end=end)
 
 # Creates a input field using a given text that can contain color codes
 def betterInput(text):
