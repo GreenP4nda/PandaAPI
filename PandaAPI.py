@@ -399,8 +399,10 @@ def update():
         betterText(prefix + "§3Downloading §5" + str(v) + " §3Version of §5PandaAPI.")
         open("PandaAPI.py", "wb").write(vFile.content)
         betterText(prefix + "§3The new Version has been downloaded. §1Please restart the Project.")
+        betterInput("§8[§3Press Enter§8]")
     elif answer == "No":
         betterText(prefix + "Continuing with outdated Version of PandaAPI")
+        betterInput("§8[§3Press Enter§8]")
     else:
         betterText("§1Invalid answer!")
         clearScreen()
