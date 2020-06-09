@@ -1,4 +1,4 @@
-version = 1.1
+version = 1.2
 
 import os
 import time
@@ -75,6 +75,27 @@ prefix = "§8» §3PandaAPI §8| §9"
 #   - Registers a Command for the Command Handler
 # prefixBuilder
 #   - Creates a console Prefix
+#
+# Classes:
+#
+# betterarray:
+#   - constructor:    takes a string, other array or list as content
+#   - get:            returns the entry at given index
+#   - getContents:    returns the raw list of contents
+#   - append:         adds an element at the end of the list
+#   - clear:          clears the contents
+#   - count:          returns the number of elements with a given identefier
+#   - size:           returns the length of the contents list
+#   - insert:         adds an element at the specified position
+#   - reverse:        reverses the order of the list
+#   - remove:         removes either the given entry, or the entry at the given position
+#   - index:          returns the index of a given entry
+#   - replace:        replaces the given index or entry with another given entry
+#   - sort:           sorts the list
+#   - toString:       returns a string of all the entries seperated using spaces
+#   - toIntArray:     converts all the entries to Integers
+#   - toFloatArray:   converts all the entries to Floats
+#   - toStringsArray: converts all the entries to Strings
 #
 
 commands = []
@@ -258,6 +279,83 @@ def registerCommand(command, executor, description=""):
 def prefixBuilder(prefix, textcolor="9", charactercolor="8"):
     back = "§" + str(charactercolor) + "» §" + str(textcolor) + str(prefix) + "§" + str(charactercolor) + " | §9"
     return back
+
+class betterarray():
+    def __init__(self, content, identefier=" "):
+        if isinstance(content, str):
+            self.content = content.split(identefier)
+        elif isinstance(content, list):
+            self.content = content
+        elif isinstance(content, array):
+            self.content = content.getContents()
+
+    def get(self, index):
+        return self.content[index]
+
+    def getContents(self):
+        return self.content
+
+    def append(self, entry):
+        self.content.append(entry)
+
+    def clear(self):
+        self.content.clear()
+
+    def count(self, entry):
+        return self.content.count(entry)
+
+    def size(self):
+        return len(self.content)
+
+    def insert(self, index, entry):
+        self.content.insert(index, entry)
+
+    def reverse(self):
+        self.content.reverse()
+
+    def remove(self, entry):
+        if isinstance(entry, int):
+            self.content.pop(entry)
+        else:
+            self.content.remove(entry)
+
+    def index(self, entry):
+        return self.content.index(entry)
+
+    def replace(self, identefier, entry):
+        if isinstance(identefier, int):
+            self.content[identefier] = entry
+        else:
+            self.content[self.index(identefier)] = entry
+
+    def sort(self):
+        self.content.sort()
+
+    def toIntArray(self):
+        i = 0
+        while i < len(self.content):
+            self.content[i] = int(self.content[i])
+            i+=1
+
+    def toFloatArray(self):
+        i = 0
+        while i < len(self.content):
+            self.content[i] = float(self.content[i])
+            i+=1
+
+    def toStringArray(self):
+        i = 0
+        while i < len(self.content):
+            self.content[i] = str(self.content[i])
+            i+=1
+
+    def toString(self):
+        back = ""
+        i = 0
+        while i < len(self.content):
+            back += " " + str(self.content[i])
+            i += 1
+        return back
 
 def pandaapiCommand(msg, sentprefix):
         if msg[0] == "list" or msg[0] == "help":
